@@ -77,7 +77,7 @@
         url : BigNew.user_detail,
         success : function(res){
             if(res.code == 200){
-                console.log(res)
+                // console.log(res)
                 $('.username').val(res.data.username);
                 $('.nickname').val(res.data.nickname);
                 $('.email').val(res.data.email);
@@ -87,5 +87,46 @@
         }
     })
     //点击上传图片
+    $('#exampleInputFile').on('change',function(){
+        // console.log(this.files[0])
+        let img = this.files[0];
+        //createObjectURL返回一段带hash的url，并且一直存储在内存中，直到document触发了unload事件（例如：document close）或者执行revokeObjectURL来释放
+        let url = URL.createObjectURL(img);
+        // console.log(url)
+        //预览图片
+        $('img.user_pic').attr('src',url);
+    })
+    //点击修改
+    $('.btn-edit').on('click',function(e){
+        //阻止默认提交
+        e.preventDefault();
+        let form = $('#form')[0];
+        //获取表单数据
+        let userData = new FormData(form); 
+        // console.log(userData)
+        $.ajax({
+            type : 'post',
+            url : BigNew.user_edit,
+            data : userData,
+            //阻止编译
+            processData : false,
+            //
+            contentType : false,
+            success : function(res){
+                if(res.code == 200){
+                    //更新外层数据
+                   $.ajax({
+                       type : 'get',
+                       url: window.BigNew.user_info,
+                       success : function(res){
+                            parent.$('.user_info img').attr('src', res.data.userPic);
+                            parent.$('.user_info span').html('欢迎&nbsp;&nbsp;' + res.data.nickname + '');
+                            parent.$('.user_center_link>img').attr('src', res.data.userPic);
+                       }
+                   })
+                }
+            }
+        })
+    })
 </script>
 </html>
