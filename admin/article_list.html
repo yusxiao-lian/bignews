@@ -195,7 +195,6 @@
             success : function(res){
                 if(res.code == 204){
                     getData(pages,function(res){
-                        console.log(pages)
                         $('#pagination-demo').twbsPagination('changeTotalPages',res.data.totalPage,pages)
                     })
                 }
