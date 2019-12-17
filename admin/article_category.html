@@ -89,7 +89,7 @@
             <td>{{$value.name}}</td>
             <td>{{$value.slug}}</td>
             <td class="text-center">
-                <a  href="javascript:void(0)" data-id="{{$value.id}}" data-toggle="modal" class=" btn btn-info btn-xs" data-target="#Modal">编辑</a>
+                <a  href="javascript:void(0)" data-id="{{$value.id}}" data-toggle="modal" class=" btn btn-info btn-xs" id="bianji" data-target="#Modal">编辑</a>
                 <a href="javascript:void(0)" id="del" data-id="{{$value.id}}" class="btn btn-danger btn-xs">删除</a>
             </td>
         </tr>
@@ -133,7 +133,8 @@
             $('#recipient-name').val('');
             $('#message-text').val('');
             //判断
-            if(dom == $('#xinzengfenlei')[0]){//如果是点击新增分类
+            if(dom === $('#xinzengfenlei')[0]){
+                //如果是点击新增分类
                 $('#exampleModalLabel').text('新增文章分类');
                 $('#confirm').text('新增');
                 $('.btn-primary').on('click',function(){
@@ -151,6 +152,7 @@
                             slug : slug
                         },
                         success : function(res){
+                            console.log(res)
                             if(res.code == 201){
                                 $('#Modal').modal('hide');
                                 getData();
@@ -159,7 +161,8 @@
                     })
                 })
                 
-            }else{//否则就是编辑文章
+            }else {
+                //否则就是编辑文章
                 $('#exampleModalLabel').text('编辑文章分类');
                 $('#confirm').text('编辑');
                 //先获得原本的数据信息
@@ -172,6 +175,7 @@
                     },
                     success :function(res){
                         if(res.code == 200){
+                            console.log(res)
                             $('#recipient-name').val(res.data[0].name);
                             $('#message-text').val(res.data[0].slug);
                         }

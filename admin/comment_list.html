@@ -157,6 +157,7 @@
           <li class="page-item last"><a href="#" class="page-link">尾页</a></li>
         </ul> -->
         <ul id="pagination-demo" class="pagination-sm"></ul>
+        <div id="tips"></div>
       </div>
 
     </div>
@@ -190,32 +191,49 @@
 </script>
 <script>
   //获取评论数据
-  $.ajax({
-    type: 'get',
-    url: BigNew.comment_list,
-    data: {
-      page: 1,
-    },
-    success: function (res) {
-      if (res.code == 200) {
-        console.log(res)
-        let list = template('list', res.data);
-        $('tbody').html(list);
-        $('#pagination-demo').twbsPagination({
-          totalPages: res.data.totalPage,
-          visiblePages: 7,
-          first : '首页',
-          last : '尾页',
-          prev : '上一页',
-          next : '下一页',
-          onPageClick: function (event, page) {
-            console.log(page)
+  let pages = 1;
+  let perpage = 3;
+  function getData(pages, callback) {
+    $.ajax({
+      type: 'get',
+      url: BigNew.comment_list,
+      data: {
+        page: pages,
+        perpage: perpage
+      },
+      success: function (res) {
+        // console.log(res)
+        if (res.code == 200) {
+          let list = template('list', res.data);
+          $('tbody').html(list);
+          if(res.data.totalPage !==0 && callback !== null){
+            $('#pagination-demo').show();
+            $('#tips').hide();
+            callback(res);
+          }else if(callback == null && res.data.data.length !== 0){
+            $('#pagination-demo').show();
+            $('#tips').hide();
           }
-        });
+        }
       }
-    }
-  })
+    })
+  }
 
+  //一开始就加载数据
+  getData(pages, function (res) {
+    $('#pagination-demo').twbsPagination({
+      totalPages: res.data.totalPage,
+      visiblePages: perpage,
+      first: '首页',
+      last: '尾页',
+      prev: '上一页',
+      next: '下一页',
+      onPageClick: function (event, page) {
+        pages = page;
+        getData(pages,null);
+      }
+    });
+  })
 </script>
 
 </html>
